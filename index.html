@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A little moment just for you 🌸</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --rose: #e8a4a4;
+        --rose-light: #f5d5d5;
+        --rose-pale: #fdf0f0;
+        --sage: #a4c4a4;
+        --sage-light: #d5e8d5;
+        --cream: #faf6f0;
+        --warm-beige: #f0e8d8;
+        --gold: #c9a96e;
+        --text-dark: #5a4a3a;
+        --text-mid: #7a6a5a;
+        --text-light: #9a8a7a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Lato", sans-serif;
+        background: var(--cream);
+        color: var(--text-dark);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ======= MUSIC INDICATOR ======= */
+      #music-indicator {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 999;
+        background: white;
+        border: 2px solid var(--rose-light);
+        border-radius: 40px;
+        padding: 10px 18px;
+        font-size: 13px;
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(232, 164, 164, 0.2);
+        opacity: 0;
+        pointer-events: none;
+      }
+      #music-indicator.visible {
+        opacity: 1;
+        pointer-events: all;
+      }
+      #music-indicator:hover {
+        border-color: var(--rose);
+        background: var(--rose-pale);
+      }
+      .music-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 18px;
+      }
+      .music-bar {
+        width: 4px;
+        background: var(--rose);
+        border-radius: 2px;
+        animation: musicBar 1.2s ease-in-out infinite alternate;
+      }
+      .music-bar:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .music-bar:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .music-bar:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes musicBar {
+        from {
+          height: 4px;
+        }
+        to {
+          height: 18px;
+        }
+      }
+      #music-indicator.muted .music-bars {
+        opacity: 0.3;
+      }
+      #music-indicator.muted .music-bar {
+        animation: none;
+        height: 4px;
+      }
+
+      /* ======= PETAL BACKGROUND ======= */
+      .petals {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .petal {
+        position: absolute;
+        width: 12px;
+        height: 16px;
+        background: var(--rose-light);
+        border-radius: 50% 0 50% 0;
+        opacity: 0;
+        animation: fall linear infinite;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(-20px) rotate(0deg);
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(110vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* ======= PAGES ======= */
+      .page {
+        display: none;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+      .page.active {
+        display: flex;
+      }
+
+      /* ======= PAGE 1 - WELCOME ======= */
+      #page-welcome {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 24px;
+        background: linear-gradient(
+          160deg,
+          #fdf0f0 0%,
+          #f5f0e8 50%,
+          #f0f5f0 100%
+        );
+        text-align: center;
+      }
+
+      .photo-frame {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 5px solid var(--rose);
+        box-shadow:
+          0 0 0 8px var(--rose-light),
+          0 0 0 14px var(--rose-pale);
+        overflow: hidden;
+        margin-bottom: 32px;
+        opacity: 0;
+        transform: scale(0.7);
+        animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s
+          forwards;
+      }
+      .photo-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .photo-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--rose-light),
+          var(--sage-light)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+      }
+      @keyframes popIn {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .welcome-message {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: slideUp 1s ease 0.8s forwards;
+      }
+      @keyframes slideUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hearts-row {
+        font-size: 28px;
+        margin-bottom: 20px;
+        letter-spacing: 8px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      .welcome-big {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(26px, 6vw, 42px);
+        color: var(--rose);
+        line-height: 1.3;
+        margin-bottom: 16px;
+      }
+      .welcome-sub {
+        font-size: clamp(15px, 3.5vw, 19px);
+        color: var(--text-mid);
+        line-height: 1.8;
+        max-width: 520px;
+        margin: 0 auto 32px;
+        font-weight: 300;
+      }
+      .welcome-sub em {
+        color: var(--rose);
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      .btn-start {
+        background: linear-gradient(135deg, var(--rose), #d4808a);
+        color: white;
+        border: none;
+        padding: 22px 56px;
+        border-radius: 60px;
+        font-size: 20px;
+        font-family: "Playfair Display", serif;
+        cursor: pointer;
+        box-shadow: 0 8px 32px rgba(232, 164, 164, 0.5);
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+      }
+      .btn-start:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(232, 164, 164, 0.6);
+      }
+      .btn-start:active {
+        transform: translateY(-1px);
+      }
+
+      /* ======= PAGE 2 - QUIZ ======= */
+      #page-quiz {
+        flex-direction: column;
+        align-items: center;
+        padding: 48px 20px 80px;
+        background: linear-gradient(
+          180deg,
+          var(--cream) 0%,
+          var(--warm-beige) 100%
+        );
+      }
+
+      .quiz-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .quiz-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(22px, 5vw, 34px);
+        color: var(--text-dark);
+        margin-bottom: 10px;
+      }
+      .quiz-subtitle {
+        color: var(--text-light);
+        font-size: 16px;
+        font-weight: 300;
+      }
+
+      .section {
+        width: 100%;
+        max-width: 680px;
+        margin-bottom: 48px;
+      }
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-emoji {
+        font-size: 26px;
+      }
+      .section-note {
+        color: var(--text-light);
+        font-size: 13px;
+        margin-bottom: 20px;
+        font-style: italic;
+      }
+
+      .choices-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .choice-btn {
+        background: white;
+        border: 2px solid var(--rose-light);
+        border-radius: 50px;
+        padding: 16px 28px;
+        font-size: 17px;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        font-family: "Lato", sans-serif;
+        font-weight: 300;
+        line-height: 1.3;
+        text-align: center;
+      }
+      .choice-btn:hover {
+        border-color: var(--rose);
+        background: var(--rose-pale);
+        color: var(--text-dark);
+        transform: translateY(-2px);
+      }
+      .choice-btn.selected {
+        background: linear-gradient(135deg, var(--rose), #d4808a);
+        border-color: transparent;
+        color: white;
+        box-shadow: 0 6px 20px rgba(232, 164, 164, 0.4);
+        transform: translateY(-2px);
+      }
+
+      /* Color choices */
+      .color-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .color-btn {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 4px solid transparent;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+      .color-btn:hover {
+        transform: scale(1.1);
+      }
+      .color-btn.selected {
+        border-color: var(--gold);
+        transform: scale(1.15);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+      .color-btn.selected::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 22px;
+        font-weight: bold;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Mood choices */
+      .mood-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+      .mood-btn {
+        background: white;
+        border: 2px solid var(--sage-light);
+        border-radius: 20px;
+        padding: 18px 24px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-align: center;
+        min-width: 100px;
+      }
+      .mood-btn:hover {
+        border-color: var(--sage);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(164, 196, 164, 0.3);
+      }
+      .mood-btn.selected {
+        background: linear-gradient(135deg, var(--sage), #7aaa7a);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(164, 196, 164, 0.5);
+      }
+      .mood-emoji {
+        font-size: 30px;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .mood-label {
+        font-size: 15px;
+        color: var(--text-mid);
+        font-weight: 300;
+      }
+      .mood-btn.selected .mood-label {
+        color: white;
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, var(--gold), #b8906a);
+        color: white;
+        border: none;
+        padding: 24px 64px;
+        border-radius: 60px;
+        font-size: 20px;
+        font-family: "Playfair Display", serif;
+        cursor: pointer;
+        box-shadow: 0 8px 32px rgba(201, 169, 110, 0.5);
+        transition: all 0.3s ease;
+        margin-top: 20px;
+      }
+      .submit-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(201, 169, 110, 0.6);
+      }
+
+      /* ======= PAGE 3 - LETTER ======= */
+      #page-letter {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 48px 24px;
+        background: linear-gradient(160deg, #fdf0f0, #f5f0e8, #f0f5f0);
+      }
+
+      .letter-envelope {
+        max-width: 600px;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(80px) scale(0.9);
+        animation: envelopeOpen 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+          0.5s forwards;
+      }
+      @keyframes envelopeOpen {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .letter-card {
+        background: white;
+        border-radius: 24px;
+        padding: 52px 44px;
+        box-shadow:
+          0 4px 0 var(--rose-light),
+          0 8px 0 var(--rose-pale),
+          0 20px 60px rgba(0, 0, 0, 0.12);
+        position: relative;
+        border-top: 5px solid var(--rose);
+      }
+      .letter-card::before {
+        content: "💌";
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 48px;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+      }
+
+      .letter-from {
+        font-size: 13px;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .letter-text {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(17px, 3.5vw, 21px);
+        color: var(--text-dark);
+        line-height: 1.9;
+        text-align: left;
+      }
+      .letter-text .greeting {
+        font-size: clamp(20px, 4.5vw, 26px);
+        color: var(--rose);
+        display: block;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+      .letter-text p {
+        margin-bottom: 20px;
+      }
+      .letter-signature {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: clamp(18px, 4vw, 24px);
+        color: var(--rose);
+        margin-top: 32px;
+        text-align: right;
+      }
+
+      .letter-deco {
+        text-align: center;
+        margin-top: 32px;
+        font-size: 28px;
+        letter-spacing: 12px;
+        opacity: 0;
+        animation: fadeIn 1s ease 1.8s forwards;
+      }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Progress bar */
+      .progress-bar-wrap {
+        width: 100%;
+        max-width: 680px;
+        height: 6px;
+        background: var(--rose-light);
+        border-radius: 3px;
+        margin-bottom: 40px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--rose), var(--gold));
+        border-radius: 3px;
+        transition: width 0.5s ease;
+        width: 0%;
+      }
+
+      .divider {
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--rose),
+          transparent
+        );
+        margin: 10px auto 24px;
+      }
+
+      @media (max-width: 480px) {
+        .letter-card {
+          padding: 44px 24px;
+        }
+        .choice-btn {
+          padding: 14px 20px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Petals -->
+    <div class="petals" id="petals"></div>
+
+    <!-- Music indicator -->
+    <div id="music-indicator" onclick="toggleMusic()" title="Toggle music">
+      <div class="music-bars">
+        <div class="music-bar"></div>
+        <div class="music-bar"></div>
+        <div class="music-bar"></div>
+      </div>
+      <span id="music-label">Soft music ♪</span>
+    </div>
+
+    <!-- ======= PAGE 1: WELCOME ======= -->
+    <div class="page active" id="page-welcome">
+      <div class="photo-frame">
+        <img
+          src="tata_biba.jpeg"
+          onerror="
+            this.parentElement.innerHTML =
+              '<div class=\'photo-placeholder\'>🌸</div>'
+          "
+          alt="The most beautiful mom"
+        />
+      </div>
+      <div class="welcome-message">
+        <div class="hearts-row">💕 🌸 💕</div>
+        <h1 class="welcome-big">
+          You are the best mom<br />in the whole world 🌍
+        </h1>
+        <div class="divider"></div>
+        <p class="welcome-sub">
+          I love you <em>so, so much</em>.<br />
+          You are my heart, my pride, my home.<br />
+          This little space is a gift — just <em>for you</em>.
+        </p>
+        <button class="btn-start" onclick="goToQuiz()">
+          🌷 &nbsp; Begin my moment
+        </button>
+      </div>
+    </div>
+
+    <!-- ======= PAGE 2: QUIZ ======= -->
+    <div class="page" id="page-quiz">
+      <div style="width: 100%; max-width: 680px">
+        <div class="quiz-header">
+          <h2 class="quiz-title">A little moment just for you 🌸</h2>
+          <p class="quiz-subtitle">
+            Choose whatever feels like you — no right or wrong answers 💛
+          </p>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+
+        <!-- PLACES -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">🏞️</span> Where do you feel most at
+            peace?
+          </h3>
+          <p class="section-note">You can choose as many as you like</p>
+          <div class="choices-grid" id="places">
+            <button class="choice-btn" onclick="toggle(this)">
+              🏖️ The beach
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌿 A garden
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              ⛰️ The mountains
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              ☕ A cozy café
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🖼️ A museum
+            </button>
+          </div>
+        </div>
+
+        <!-- FOOD -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">🍽️</span> What do you love to eat?
+          </h3>
+          <p class="section-note">Multiple choices welcome 💛</p>
+          <div class="choices-grid" id="food">
+            <button class="choice-btn" onclick="toggle(this)">
+              🥘 Traditional Algerian food
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🦐 Seafood
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🍔 Fast food
+            </button>
+          </div>
+        </div>
+
+        <!-- MUSIC -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">🎶</span> Your favorite kind of music?
+          </h3>
+          <p class="section-note">The one that warms your heart</p>
+          <div class="choices-grid" id="music">
+            <button class="choice-btn" onclick="toggle(this)">🎵 Kabyle</button>
+            <button class="choice-btn" onclick="toggle(this)">🎵 Chaabi</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎵 90s English music
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎵 Old French songs
+            </button>
+          </div>
+        </div>
+
+        <!-- HOBBIES -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">✨</span> Things you love doing?
+          </h3>
+          <p class="section-note">Your little pleasures, all yours</p>
+          <div class="choices-grid" id="hobbies">
+            <button class="choice-btn" onclick="toggle(this)">
+              🎨 Drawing
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              📚 Reading
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎧 Listening to music
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🚶‍♀️ Going for a walk
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🧘‍♀️ Meditation
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              👩‍🍳 Cooking
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🛍️ Shopping
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎬 Watching movies &amp; series
+            </button>
+          </div>
+        </div>
+
+        <!-- QUALITIES -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">💖</span> Your qualities...
+          </h3>
+          <p class="section-note">
+            Pick all the ones that describe you — there are so many! 🌟
+          </p>
+          <div class="choices-grid" id="qualities">
+            <button class="choice-btn" onclick="toggle(this)">💝 Kind</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌟 Responsible
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🕊️ Patient
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🧠 Intelligent
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🤝 Helpful
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">💪 Brave</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌺 Generous
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              ✨ Creative
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">🌙 Gentle</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🦋 Free-spirited
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌻 Optimistic
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">🌊 Calm</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎯 Determined
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">❤️ Loving</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌹 Elegant
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🏡 Protective
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">💡 Wise</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🤗 Empathetic
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">🌿 Serene</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎀 Thoughtful
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌠 Inspiring
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🔥 Passionate
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🤍 Sincere
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌈 Positive
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">🦁 Strong</button>
+            <button class="choice-btn" onclick="toggle(this)">🍀 Lucky</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🪷 Sensitive
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">🎵 Joyful</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌍 Open-minded
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              💎 Precious
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌸 Warm-hearted
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">🫶 Caring</button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🌷 Graceful
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              ⭐ Exceptional
+            </button>
+            <button class="choice-btn" onclick="toggle(this)">
+              🎁 Selfless
+            </button>
+          </div>
+        </div>
+
+        <!-- FAVOURITE COLOR -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">🎨</span> Your favorite color?
+          </h3>
+          <p class="section-note">The one that makes your heart smile</p>
+          <div class="color-grid" id="colors">
+            <button
+              class="color-btn"
+              style="background: #e8a4a4"
+              onclick="selectOne(this, 'colors')"
+              title="Pink"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #a4c4e8"
+              onclick="selectOne(this, 'colors')"
+              title="Sky blue"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #a4c4a4"
+              onclick="selectOne(this, 'colors')"
+              title="Sage green"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #c9a96e"
+              onclick="selectOne(this, 'colors')"
+              title="Golden"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #c4a4d4"
+              onclick="selectOne(this, 'colors')"
+              title="Lavender"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #f0c080"
+              onclick="selectOne(this, 'colors')"
+              title="Peach"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #a0d4d4"
+              onclick="selectOne(this, 'colors')"
+              title="Turquoise"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #d4a0a0"
+              onclick="selectOne(this, 'colors')"
+              title="Terracotta"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #f0ece0; border: 2px solid #ddd"
+              onclick="selectOne(this, 'colors')"
+              title="Cream"
+            ></button>
+            <button
+              class="color-btn"
+              style="background: #8080a0"
+              onclick="selectOne(this, 'colors')"
+              title="Navy blue"
+            ></button>
+          </div>
+        </div>
+
+        <!-- PET -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">🐾</span> Your dream pet?
+          </h3>
+          <p class="section-note">
+            The one that would make you smile every morning
+          </p>
+          <div class="choices-grid" id="pets">
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🐱 A cat
+            </button>
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🐶 A dog
+            </button>
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🐦 A bird
+            </button>
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🐠 A fish
+            </button>
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🐇 A rabbit
+            </button>
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🐢 A turtle
+            </button>
+            <button class="choice-btn" onclick="selectOne(this, 'pets')">
+              🦜 A parrot
+            </button>
+          </div>
+        </div>
+
+        <!-- MOOD -->
+        <div class="section">
+          <h3 class="section-title">
+            <span class="section-emoji">🌤️</span> Today, I feel more...
+          </h3>
+          <p class="section-note">No right answer — just yours 💛</p>
+          <div class="mood-grid" id="mood">
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">😰</span
+              ><span class="mood-label">Stressed</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">😊</span
+              ><span class="mood-label">Happy</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">😔</span
+              ><span class="mood-label">Sad</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">😐</span
+              ><span class="mood-label">Neutral</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🕊️</span
+              ><span class="mood-label">Serene</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">😴</span
+              ><span class="mood-label">Tired</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🤔</span
+              ><span class="mood-label">Thoughtful</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">💪</span
+              ><span class="mood-label">Full of energy</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🥺</span
+              ><span class="mood-label">Emotional</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🌸</span
+              ><span class="mood-label">Light</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🌊</span
+              ><span class="mood-label">Nostalgic</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🌞</span
+              ><span class="mood-label">Grateful</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🫶</span
+              ><span class="mood-label">Loved</span>
+            </button>
+            <button class="mood-btn" onclick="selectOne(this, 'mood')">
+              <span class="mood-emoji">🌙</span
+              ><span class="mood-label">Quiet inside</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div style="text-align: center; padding-bottom: 40px">
+          <button class="submit-btn" onclick="submitForm()">
+            🌸 &nbsp; Finish my moment
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= PAGE 3: LETTER ======= -->
+    <div class="page" id="page-letter">
+      <div class="letter-envelope">
+        <div class="letter-card">
+          <div class="letter-from">A letter from Bilal 💌</div>
+          <div class="letter-text">
+            <span class="greeting">Hey mom,</span>
+            <p>This is Bilal. I created this little space just for you.</p>
+            <p>
+              If you're reading this, it means you took a little time just for
+              yourself — and that already makes me so happy.
+            </p>
+            <p>
+              I just want you to know that you deserve all the love, all the
+              calm and all the joy in this world...
+            </p>
+            <p>
+              Seeing your choices reminded me that you're not only the one who
+              takes care of everything — you are also someone who deserves to
+              <em>enjoy</em>... to rest... and to feel light.
+            </p>
+            <p>I'll be right there with you, always. 🌸</p>
+            <div class="letter-signature">
+              With all my love,<br />xo, Bilal 💕
+            </div>
+          </div>
+        </div>
+        <div class="letter-deco">🌸 💕 🌸</div>
+      </div>
+    </div>
+
+    <script>
+      // ======= PETALS =======
+      const petalsContainer = document.getElementById("petals");
+      const petalColors = [
+        "#f5d5d5",
+        "#fce4ec",
+        "#d5e8d5",
+        "#fde8c8",
+        "#e8d5f5",
+      ];
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement("div");
+        p.className = "petal";
+        p.style.left = Math.random() * 100 + "%";
+        p.style.width = 8 + Math.random() * 10 + "px";
+        p.style.height = 10 + Math.random() * 14 + "px";
+        p.style.background =
+          petalColors[Math.floor(Math.random() * petalColors.length)];
+        p.style.animationDuration = 8 + Math.random() * 12 + "s";
+        p.style.animationDelay = Math.random() * 10 + "s";
+        p.style.borderRadius =
+          Math.random() > 0.5 ? "50% 0 50% 0" : "0 50% 0 50%";
+        petalsContainer.appendChild(p);
+      }
+
+      // ======= SOFT AMBIENT MUSIC via Web Audio API =======
+      // This generates real piano-like tones directly in the browser.
+      // It uses AudioContext which bypasses the phone's silent/ringer switch
+      // and plays through the media volume instead.
+      let audioCtx, master, reverb;
+      let playing = false;
+
+      // 🎼 Scale (C major but moody patterns)
+      const NOTES = {
+        C3: 130.81,
+        F3: 174.61,
+        G3: 196.0,
+        A3: 220.0,
+        C4: 261.63,
+        D4: 293.66,
+        E4: 329.63,
+        F4: 349.23,
+        G4: 392.0,
+        A4: 440.0,
+        B4: 493.88,
+        C5: 523.25,
+        D5: 587.33,
+        E5: 659.25,
+        G5: 783.99,
+      };
+
+      // 🎹 Lofi chord progression (I - vi - IV - V but slow & emotional)
+      const progression = [
+        ["C3", "G3", "C4", "E4", "G4"],
+        ["A3", "E4", "A4", "C5", "E5"],
+        ["F3", "C4", "F4", "A4", "C5"],
+        ["G3", "D4", "G4", "B4", "D5"],
+      ];
+
+      // 🎶 Chill melody phrases (handcrafted = no cringe randomness)
+      const melodies = [
+        ["E5", "D5", "C5", "G4"],
+        ["G5", "E5", "D5"],
+        ["C5", "E5", "G5", "E5"],
+        ["A4", "C5", "E5"],
+      ];
+
+      function init() {
+        if (audioCtx) return;
+
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        master = audioCtx.createGain();
+        master.gain.value = 0.25;
+
+        // 🎧 Reverb (big hall)
+        reverb = audioCtx.createConvolver();
+        const len = audioCtx.sampleRate * 4;
+        const ir = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
+
+        for (let c = 0; c < 2; c++) {
+          let data = ir.getChannelData(c);
+          for (let i = 0; i < len; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.8);
+          }
+        }
+        reverb.buffer = ir;
+
+        const dry = audioCtx.createGain();
+        const wet = audioCtx.createGain();
+        dry.gain.value = 0.6;
+        wet.gain.value = 0.7;
+
+        master.connect(dry);
+        master.connect(reverb);
+        reverb.connect(wet);
+
+        dry.connect(audioCtx.destination);
+        wet.connect(audioCtx.destination);
+      }
+
+      // 🎹 Realistic piano note
+      function playNote(freq, time, duration, velocity = 0.7) {
+        if (!Number.isFinite(freq)) return;
+
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const osc3 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // Slight detune = lofi warmth
+        osc1.frequency.setValueAtTime(freq, time);
+        osc2.frequency.setValueAtTime(freq * 2.01, time);
+        osc3.frequency.setValueAtTime(freq * 0.5, time);
+
+        osc1.type = "sine";
+        osc2.type = "triangle";
+        osc3.type = "sine";
+
+        // 🎹 velocity-sensitive envelope
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(velocity, time + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        osc3.connect(gain);
+        gain.connect(master);
+
+        osc1.start(time);
+        osc2.start(time);
+        osc3.start(time);
+
+        osc1.stop(time + duration);
+        osc2.stop(time + duration);
+        osc3.stop(time + duration);
+      }
+
+      // 🤲 LEFT HAND (bass + chords)
+      function playLeftHand(chord, time) {
+        chord.forEach((note, i) => {
+          const freq = NOTES[note];
+          const t = time + i * 0.08; // slight human delay
+          const vel = 0.4 + Math.random() * 0.2;
+
+          playNote(freq, t, 3.5, vel);
+        });
+      }
+
+      // ✨ RIGHT HAND (melody)
+      function playRightHand(pattern, time) {
+        pattern.forEach((note, i) => {
+          const freq = NOTES[note];
+          const swing = i % 2 === 0 ? 0 : 0.05; // lofi groove
+          const t = time + i * 0.5 + swing;
+          const vel = 0.5 + Math.random() * 0.4;
+
+          playNote(freq, t, 2.2, vel);
+        });
+      }
+
+      let step = 0;
+
+      function loop() {
+        if (!playing) return;
+
+        const now = audioCtx.currentTime + 0.05;
+
+        const chord = progression[step % progression.length];
+        const melody = melodies[Math.floor(Math.random() * melodies.length)];
+
+        // LEFT = slow emotional base
+        playLeftHand(chord, now);
+
+        // RIGHT = expressive melody
+        playRightHand(melody, now + 0.4);
+
+        step++;
+
+        setTimeout(loop, 4000); // smooth looping
+      }
+
+      function start() {
+        init();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        playing = true;
+        loop();
+      }
+
+      function stop() {
+        playing = false;
+      }
+
+      function toggleMusic() {
+        playing ? stop() : start();
+      }
+
+      // ======= QUIZ LOGIC =======
+      function toggle(btn) {
+        btn.classList.toggle("selected");
+        updateProgress();
+      }
+
+      function selectOne(btn, groupId) {
+        document
+          .getElementById(groupId)
+          .querySelectorAll(".choice-btn, .color-btn, .mood-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const sections = [
+          "places",
+          "food",
+          "music",
+          "hobbies",
+          "qualities",
+          "colors",
+          "pets",
+          "mood",
+        ];
+        let filled = 0;
+        sections.forEach((id) => {
+          const g = document.getElementById(id);
+          if (g && g.querySelector(".selected")) filled++;
+        });
+        document.getElementById("progressBar").style.width =
+          (filled / sections.length) * 100 + "%";
+      }
+
+      function collectAnswers() {
+        const sections = {
+          places: "Favourite places",
+          food: "Favourite food",
+          music: "Favourite music",
+          hobbies: "Favourite hobbies",
+          qualities: "Her qualities",
+          colors: "Favourite color",
+          pets: "Dream pet",
+          mood: "Today's mood",
+        };
+        let text = "🌸 Mom's answers 🌸\n\n";
+        Object.entries(sections).forEach(([id, label]) => {
+          const g = document.getElementById(id);
+          const sel = [...g.querySelectorAll(".selected")].map(
+            (b) => b.title || b.textContent.trim(),
+          );
+          text += `${label}:\n${sel.length ? sel.join(", ") : "(nothing selected)"}\n\n`;
+        });
+        return text;
+      }
+
+      function goToQuiz() {
+        // Start music on first user interaction (required by browsers)
+        start();
+        document.getElementById("page-welcome").classList.remove("active");
+        document.getElementById("page-quiz").classList.add("active");
+        window.scrollTo(0, 0);
+      }
+
+      async function submitForm() {
+        const data = collectAnswers();
+        try {
+          const formData = new FormData();
+          formData.append("_subject", "🌸 Mom's answers 🌸");
+          formData.append("message", data);
+          formData.append("_captcha", "false");
+          formData.append("_template", "table");
+          await fetch("https://formsubmit.co/ajax/bilalaitsai1710@gmail.com", {
+            method: "POST",
+            body: formData,
+            headers: { Accept: "application/json" },
+          });
+        } catch (e) {
+          console.log("Email sent attempt");
+        }
+
+        document.getElementById("page-quiz").classList.remove("active");
+        document.getElementById("page-letter").classList.add("active");
+        window.scrollTo(0, 0);
+      }
+    </script>
+  </body>
+</html>
